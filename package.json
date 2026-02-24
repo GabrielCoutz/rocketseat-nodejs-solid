@@ -15,6 +15,7 @@
   "description": "",
   "devDependencies": {
     "@rocketseat/eslint-config": "2.2.2",
+    "@types/bcryptjs": "2.4.6",
     "@types/node": "25.3.0",
     "prisma": "7.4.1",
     "tsup": "8.5.1",
@@ -24,6 +25,7 @@
   "dependencies": {
     "@prisma/adapter-pg": "7.4.1",
     "@prisma/client": "7.4.1",
+    "bcryptjs": "3.0.3",
     "dotenv": "17.3.1",
     "fastify": "5.7.4",
     "zod": "4.3.6"
