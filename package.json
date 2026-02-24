@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsup src --out-dir build",
-    "start": "node build/server.js"
+    "start": "node build/server.js",
+    "studio": "npx prisma studio --url=\"postgresql://docker:docker@localhost:5432/apisolid?schema=public\""
   },
   "keywords": [],
   "author": "",
@@ -15,11 +16,14 @@
   "devDependencies": {
     "@rocketseat/eslint-config": "2.2.2",
     "@types/node": "25.3.0",
+    "prisma": "7.4.1",
     "tsup": "8.5.1",
     "tsx": "4.21.0",
     "typescript": "5.9.3"
   },
   "dependencies": {
+    "@prisma/adapter-pg": "7.4.1",
+    "@prisma/client": "7.4.1",
     "dotenv": "17.3.1",
     "fastify": "5.7.4",
     "zod": "4.3.6"
