@@ -7,7 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsup src --out-dir build",
     "start": "node build/server.js",
-    "studio": "npx prisma studio --url=\"postgresql://docker:docker@localhost:5432/apisolid?schema=public\""
+    "studio": "npx prisma studio --url=\"postgresql://docker:docker@localhost:5432/apisolid?schema=public\"",
+    "test": "vitest run",
+    "test:watch": "vitest watch"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +22,9 @@
     "prisma": "7.4.1",
     "tsup": "8.5.1",
     "tsx": "4.21.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vite-tsconfig-paths": "6.1.1",
+    "vitest": "4.0.18"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.4.1",
