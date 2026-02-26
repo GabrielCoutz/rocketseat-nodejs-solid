@@ -2,15 +2,19 @@ import { InMemoryUsersRepository } from '@/repositories/in-memory-users-reposito
 import { UserAlreadyExistsError } from '@/services/errors/user-already-exists-error.js';
 import { RegisterService } from '@/services/register.js';
 import { compare } from 'bcryptjs';
-import { expect, describe, it } from 'vitest';
+import { expect, describe, it, beforeEach } from 'vitest';
+
+let usersRepository: InMemoryUsersRepository;
+let sut: RegisterService;
 
 describe('Register service', () => {
+  beforeEach(() => {
+    usersRepository = new InMemoryUsersRepository();
+    sut = new RegisterService(usersRepository);
+  });
+
   it('should hash user password', async () => {
-    const usersRepository = new InMemoryUsersRepository();
-
-    const registerService = new RegisterService(usersRepository);
-
-    const { createdUser } = await registerService.execute({
+    const { createdUser } = await sut.execute({
       name: 'John Doe',
       email: 'email@example.com',
       password: 'password123',
@@ -25,18 +29,14 @@ describe('Register service', () => {
   });
 
   it('should not allow to register with an email that is already in use', async () => {
-    const usersRepository = new InMemoryUsersRepository();
-
-    const registerService = new RegisterService(usersRepository);
-
-    await registerService.execute({
+    await sut.execute({
       name: 'John Doe',
       email: 'email@example.com',
       password: 'password123',
     });
 
     await expect(() =>
-      registerService.execute({
+      sut.execute({
         name: 'John Doe',
         email: 'email@example.com',
         password: 'password123',
@@ -45,11 +45,7 @@ describe('Register service', () => {
   });
 
   it('should be able to register a new user', async () => {
-    const usersRepository = new InMemoryUsersRepository();
-
-    const registerService = new RegisterService(usersRepository);
-
-    const { createdUser } = await registerService.execute({
+    const { createdUser } = await sut.execute({
       name: 'John Doe',
       email: 'email@example.com',
       password: 'password123',
