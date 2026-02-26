@@ -35,7 +35,7 @@ expect(isPasswordCorrectlyHashed).toBe(true)
       password: 'password123'
     })
 
-   expect(() => registerService.execute({
+   await expect(() => registerService.execute({
       name: 'John Doe',
       email: 'email@example.com',
       password: 'password123'
