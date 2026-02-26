@@ -1,8 +1,9 @@
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory-check-ins-repository.js';
+import { LateCheckInValidationError } from '@/services/errors/late-check-in-validation-error.js';
 import { ResourceNotFoundError } from '@/services/errors/resource-not-found-error.js';
 import { ValidateCheckInService } from '@/services/validate-check-in.js';
 
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let checkInsRepository: InMemoryCheckInsRepository;
 let sut: ValidateCheckInService;
@@ -12,15 +13,15 @@ describe('Validate check-in service', () => {
     checkInsRepository = new InMemoryCheckInsRepository();
     sut = new ValidateCheckInService(checkInsRepository);
 
-    // vi.useFakeTimers();
+    vi.useFakeTimers();
   });
 
-  // afterEach(() => {
-  //   vi.useRealTimers();
-  // });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
 
   it('should be able to validate a check-in', async () => {
-    // vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
+    vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
 
     const newCheckIn = await checkInsRepository.create({
       gym_id: 'gym-id',
@@ -45,5 +46,23 @@ describe('Validate check-in service', () => {
         checkInId: 'inexistent-check-in-id',
       })
     ).rejects.toBeInstanceOf(ResourceNotFoundError);
+  });
+
+  it('should not be able to validate check-in after 20 minutes of its creation', async () => {
+    vi.setSystemTime(new Date(2022, 0, 20, 8, 0, 0));
+
+    const newCheckIn = await checkInsRepository.create({
+      gym_id: 'gym-id',
+      user_id: 'user-id',
+    });
+
+    const twentyOneMinutesInMs = 1000 * 60 * 21;
+    vi.advanceTimersByTime(twentyOneMinutesInMs);
+
+    await expect(() =>
+      sut.execute({
+        checkInId: newCheckIn.id,
+      })
+    ).rejects.toBeInstanceOf(LateCheckInValidationError);
   });
 });
